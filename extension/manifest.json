@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Phish Test",
+  "version": "0.0.1",
+  "description": "Phish ES6 Import Test",
+  "author": "phish-team",
+  "background": {
+    "page": "src/html/background.html"
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": ["<all_urls>"],
+      "css": ["bootstrap.min.css", "src/css/myStyles.css"],
+      "js": [
+        "jquery-3.2.1.min.js",
+        "bootstrap.min.js",
+        "src/js/content_script.js"
+      ]
+    }
+  ],
+  "permissions": ["<all_urls>", "tabs", "activeTab"],
+  "web_accessible_resources": ["src/js/*"]
+}
