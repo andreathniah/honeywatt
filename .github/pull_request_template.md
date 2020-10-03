@@ -8,7 +8,7 @@ Resolves #[issue number]: [issue title]
 - [ ] I have tested the changes in this pull-request myself 
 - [ ] I have added tests for my functionality (check if not applicable)
 - [ ] I have made corresponding changes to the documentation (check if not applicable)
-- [ ] My codes have been linted with `prettier` 
+- [ ] My codes have been linted with `prettier` (check if not applicable)
 - [ ] My commit messages follows the guidelines
 
 ### Checklist for Reviewers
