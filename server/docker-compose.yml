@@ -14,10 +14,27 @@ services:
     # Expose port -- dependent on Dockerfile
     ports:
       - "80:3000"
-    external_links:
+    networks:
+      - mynetwork
+    depends_on:
       - mongo
+
   mongo:
     container_name: mongo
     image: mongo
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - mongodb_data_container:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  mongodb_data_container:

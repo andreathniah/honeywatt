@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const {
   MONGO_USERNAME,
@@ -15,7 +17,7 @@ const options = {
   connectTimeoutMS: 10000,
 };
 
-// const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
+// const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
 
 // temporary for dev purposes
 const url = "mongodb://mongo:27017/docker-node-mongo";
