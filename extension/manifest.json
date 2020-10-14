@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Phish Test",
+  "name": "PH!SH",
   "version": "0.0.1",
-  "description": "Phish ES6 Import Test",
-  "author": "phish-team",
+  "description": "Browser extension to intercept phishing sites",
+  "author": "honeywatt",
   "background": {
     "page": "src/html/background.html"
   },
@@ -11,7 +11,7 @@
     {
       "run_at": "document_start",
       "matches": ["<all_urls>"],
-      "css": ["bootstrap.min.css", "src/css/myStyles.css"],
+      "css": ["bootstrap.min.css", "src/css/styles.css"],
       "js": [
         "jquery-3.2.1.min.js",
         "bootstrap.min.js",
