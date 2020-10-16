@@ -1,24 +1,35 @@
 const fileUrl = require("file-url");
 const isUrl = require("is-url");
 const parseUrl = require("url-parse");
+const puppeteer = require("puppeteer");
+const {
+  buildLaunchOptions,
+  buildNavigationOptions,
+  screenshotBuilder,
+} = require("./puppeteer.constants");
 
-const { buildNavigationOptions } = require("../services/puppeteerOptions");
-
-// Grabs URL or HTML file contents
-grabHtmlContent = async (argv, page) => {
+// Abstracted to make testing easier
+takeScreenshot = (url, filepath) => {
   return new Promise(async (resolve, reject) => {
-    // Checks if given link is a file or URL
-    const url = isUrl(argv.url)
-      ? parseUrl(argv.url).toString()
-      : fileUrl(argv.url);
+    // store output into base64 and send to analysis server
+    const argv = {
+      ...screenshotBuilder,
+      url: url,
+      output: filepath,
+    };
 
-    console.log(`Loading ${url}`);
-    await page.goto(url, buildNavigationOptions(argv));
-    // await page.waitForSelector("#readyToPrint");
-    page
-      .evaluate(() => document.documentElement.outerHTML)
-      .then((html) => resolve(html))
-      .catch((err) => reject(err));
+    const browser = await puppeteer.launch(buildLaunchOptions(argv));
+    screenshotPage(argv, await browser.newPage())
+      .then((buffer) => {
+        console.log("Completed screenshot operation!");
+        browser.close();
+        resolve({ status: 200, message: buffer });
+      })
+      .catch((err) => {
+        console.error({ err }, "something happened!");
+        browser.close();
+        resolve({ status: 501, message: "Something went wrong!" });
+      });
   });
 };
 
@@ -40,6 +51,24 @@ screenshotPage = async (argv, page) => {
     page
       .screenshot(options)
       .then((buffer) => resolve(buffer))
+      .catch((err) => reject(err));
+  });
+};
+
+// Grabs URL or HTML file contents
+grabHtmlContent = async (argv, page) => {
+  return new Promise(async (resolve, reject) => {
+    // Checks if given link is a file or URL
+    const url = isUrl(argv.url)
+      ? parseUrl(argv.url).toString()
+      : fileUrl(argv.url);
+
+    console.log(`Loading ${url}`);
+    await page.goto(url, buildNavigationOptions(argv));
+    // await page.waitForSelector("#readyToPrint");
+    page
+      .evaluate(() => document.documentElement.outerHTML)
+      .then((html) => resolve(html))
       .catch((err) => reject(err));
   });
 };
@@ -76,8 +105,4 @@ printPage = async (argv, page) => {
   });
 };
 
-module.exports = {
-  grabHtmlContent,
-  printPage,
-  screenshotPage,
-};
+module.exports = { grabHtmlContent, printPage, screenshotPage };
