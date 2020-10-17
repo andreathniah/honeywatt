@@ -1,5 +1,5 @@
 //During the test the env variable is set to test
-https: process.env.NODE_ENV = "test";
+process.env.NODE_ENV = "test";
 
 //Require the dev-dependencies
 let chai = require("chai");
@@ -9,7 +9,7 @@ var should = chai.should();
 
 chai.use(chaiHttp);
 
-describe("GET /", () => {
+describe("[INTEGRATION] GET /", () => {
   it("should get 200 alive status", (done) => {
     chai
       .request(server)

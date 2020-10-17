@@ -9,26 +9,31 @@ const {
 } = require("./puppeteer.constants");
 
 // Abstracted to make testing easier
-takeScreenshot = (url, filepath) => {
+takeScreenshot = (url = null, filename = null) => {
   return new Promise(async (resolve, reject) => {
+    if (!url && !filename) {
+      reject("Parameters are missing");
+      return;
+    }
+
     // store output into base64 and send to analysis server
     const argv = {
       ...screenshotBuilder,
       url: url,
-      output: filepath,
+      output: filename,
     };
 
     const browser = await puppeteer.launch(buildLaunchOptions(argv));
     screenshotPage(argv, await browser.newPage())
       .then((buffer) => {
-        console.log("Completed screenshot operation!");
+        // console.log("Completed screenshot operation!");
         browser.close();
-        resolve({ status: 200, message: buffer });
+        resolve(buffer);
       })
       .catch((err) => {
         console.error({ err }, "something happened!");
         browser.close();
-        resolve({ status: 501, message: "Something went wrong!" });
+        reject("Something went wrong!");
       });
   });
 };
@@ -40,12 +45,13 @@ screenshotPage = async (argv, page) => {
       : fileUrl(argv.url);
 
     const options = {
-      path: `${argv.output}.png`,
+      encoding: "base64",
       fullPage: argv.fullPage,
       omitBackground: argv.omitBackground,
+      path: `data/${argv.output}.png`,
     };
 
-    console.log(`Loading ${url} and writing to ${options.path}...`);
+    // console.log(`Loading ${url} and writing to ${options.path}...`);
 
     await page.goto(url, buildNavigationOptions(argv));
     page
@@ -105,4 +111,4 @@ printPage = async (argv, page) => {
   });
 };
 
-module.exports = { grabHtmlContent, printPage, screenshotPage };
+module.exports = { takeScreenshot };
