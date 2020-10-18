@@ -20,8 +20,9 @@ analyseURL = (req, res) => {
 // NOTE: Only for testing purposes
 getScreenshot = (req, res) => {
   const url = "https://www.browserless.io/";
-  const filepath = "data/";
-  takeScreenshot(url, filepath)
+  const filename = "output";
+  console.log("[ROUTES] Getting screenshots from:", url);
+  takeScreenshot(url, filename)
     .then((buffer) => res.status(200).json({ message: buffer }))
     .catch((err) => res.status(501).json(err));
 };

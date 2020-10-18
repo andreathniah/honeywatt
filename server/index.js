@@ -1,22 +1,40 @@
+require("./src/db");
+require("dotenv").config();
+
 const express = require("express");
-const bodyParser = require("body-parser");
 const router = require("./src/routes");
 
 const app = express();
-const port = process.env.PORT || 5000;
+app.set("views", "./src/views");
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: false }));
 
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server started on port: ${port}`);
 });
 
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+// Testing APIs for MongoDB
+const Item = require("./src/models/item");
+app.get("/", (req, res) => {
+  Item.find()
+    .then((items) => res.render("index", { items: items }))
+    .catch((err) => res.status(404).json({ msg: "No items found" }));
+});
+
+app.post("/item/add", (req, res) => {
+  const newItem = new Item({ name: req.body.name });
+  newItem.save().then((item) => {
+    console.log("Added item", item);
+    res.redirect("/");
+  });
+});
 
 // For testing purposes
 app.route("/screenshot/:id").post(router.getScreenshot);
 
 // Check alive status
-app.get("/", (req, res) => res.status(200).json({ msg: "ok!" }));
+// app.get("/", (req, res) => res.status(200).json({ msg: "ok!" }));
 app.route("/analyse/:taskId").post(router.analyseURL);
 
 module.exports = app; // for testing

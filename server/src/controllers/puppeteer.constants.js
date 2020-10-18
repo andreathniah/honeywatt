@@ -28,8 +28,11 @@ const screenshotBuilder = {
 };
 
 buildLaunchOptions = ({ sandbox }) => {
-  const args = []; // add other OS specific args here
-  if (sandbox === false) args.push("--disable-dev-shm-usage");
+  const args = [];
+
+  if (process.env.NODE_ENV !== "test") args.push("--no-sandbox"); // required for Docker
+  if (sandbox === false) args.push("--disable-dev-shm-usage"); // required if not headless
+
   return { ...sandbox, args };
 };
 

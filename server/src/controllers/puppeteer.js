@@ -45,7 +45,7 @@ screenshotPage = async (argv, page) => {
       : fileUrl(argv.url);
 
     const options = {
-      encoding: "base64",
+      encoding: "binary",
       fullPage: argv.fullPage,
       omitBackground: argv.omitBackground,
       path: `data/${argv.output}.png`,
