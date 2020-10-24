@@ -1,4 +1,5 @@
 const { takeScreenshot } = require("./controllers/puppeteer");
+const { deleteSeedData, insertSeedData } = require("./commons/seeder");
 
 analyseURL = (req, res) => {
   const taskId = req.params.taskId;
@@ -27,4 +28,20 @@ getScreenshot = (req, res) => {
     .catch((err) => res.status(501).json(err));
 };
 
-module.exports = { getScreenshot, analyseURL };
+seedDatabase = (req, res) => {
+  const companyname = "grabwatt";
+  insertSeedData(companyname)
+    .then(() => res.status(200))
+    .catch((err) => {
+      deleteSeedData().then(() => res.status(501).json(err));
+    });
+};
+
+deleteDatabase = (req, res) => {
+  const companyname = "grabwatt";
+  deleteSeedData(companyname)
+    .then(() => res.status(200))
+    .catch((err) => res.status(501).json(err));
+};
+
+module.exports = { getScreenshot, analyseURL, seedDatabase, deleteDatabase };

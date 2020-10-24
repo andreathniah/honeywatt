@@ -32,9 +32,13 @@ app.post("/item/add", (req, res) => {
 
 // For testing purposes
 app.route("/screenshot/:id").post(router.getScreenshot);
+app
+  .route("database/seed")
+  .post(router.seedDatabase)
+  .delete(router.deleteDatabase);
 
 // Check alive status
-// app.get("/", (req, res) => res.status(200).json({ msg: "ok!" }));
+app.get("/status", (req, res) => res.status(200).json({ msg: "ok!" }));
 app.route("/analyse/:taskId").post(router.analyseURL);
 
 module.exports = app; // for testing
