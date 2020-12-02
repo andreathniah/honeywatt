@@ -1,19 +1,26 @@
-const { takeScreenshot } = require("./controllers/puppeteer");
+const { takeScreenshot } = require("./services/puppeteer");
 const { deleteSeedData, insertSeedData } = require("./commons/seeder");
+const Analyse = require("./services/analyse");
 
-analyseURL = (req, res) => {
+analyseURL = async (req, res) => {
   const taskId = req.params.taskId;
-  const { url, identity } = req.body;
+  let { url, identity } = req.body;
 
   console.log(`[${identity}] Tab ${taskId} accessing ${url}`);
 
   // TODO: Authentication to check which company this user is from via keys
 
-  // TODO: Take screenshot and convert buffer to base64
-  // const ssInBinary = await puppeteer.takeScreenshot(url, filename);
-  // const ssInBase64 = Buffer.from(ssInBinary, "binary").toString("base64");
+  // Take screenshot and convert buffer to base64
+  url = "https://www.google.com/";
+  // takeScreenshot(url, `${identity}_${taskId}`)
+  //   .then((ssInBinary) => {
+  //     const ssInBase64 = Buffer.from(ssInBinary, "binary").toString("base64");
+  //     // TODO Call Analyse class to analyse if image is phishing site
+  //   })
+  //   .catch((err) => console.log(err));
 
-  // TODO: Call Analyse class to analyse if image is phishing site
+  const analyse = new Analyse(url, "ssInBase64");
+  analyse.forTesting().catch((err) => console.log(err));
 
   res.status(200).json({ message: "WIP!" });
 };

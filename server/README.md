@@ -8,6 +8,10 @@ PH!SH C2 server acts as command and control server between the browser extension
 
 ```javascript
 // to set up dev environment
+npm install
+docker-compose build
+
+// start dev environment
 docker-compose up -d
 
 // to shut down dev environment
@@ -20,6 +24,16 @@ docker-compose up
 // to check logs
 docker ps
 docker logs <CONTAINER_ID> -f
+```
+
+### Routes
+
+```bash
+# GET to /status to check if server is live
+curl localhost:80/status
+
+# POST to /analyse/:taskId
+curl -X POST 127.0.0.1:80/analyse/5 -d "url=www.google.com&identity=random"
 ```
 
 ### Running Unit Tests
@@ -47,3 +61,4 @@ npm test
 ## References
 
 - [Unit Testing](www.digitalocean.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai)
+- [One-to-Many Relationship](https://stackoverflow.com/questions/34985846/mongoose-document-references-with-a-one-to-many-relationship)
