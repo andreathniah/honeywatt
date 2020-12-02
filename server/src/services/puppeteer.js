@@ -16,6 +16,8 @@ takeScreenshot = (url = null, filename = null) => {
       return;
     }
 
+    // TODO: check if URL begins with https://
+
     // store output into base64 and send to analysis server
     const argv = {
       ...screenshotBuilder,

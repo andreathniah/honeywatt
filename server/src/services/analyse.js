@@ -1,22 +1,34 @@
+const phish = require("../controllers/phish");
+const company = require("../controllers/company");
+
 class Analyse {
   constructor(url = null, screenshot = null) {
     this.url = url;
-    this.hostname = url; // TODO: convert URL to hostname
+    // this.hostname = url; // TODO: convert URL to hostname
+    this.hostname = "google.com";
     this.screenshot = screenshot; // should already be in base64
   }
 
   isGloballyMalicious() {
-    const status = null;
-    if (this.hostname && this.screenshot) {
-    }
-    return status;
+    return new Promise((resolve, reject) => {
+      if (this.hostname && this.screenshot) {
+        phish
+          .findOne({ hostname: this.hostname })
+          .then((status) => (status ? resolve(true) : resolve(false)))
+          .catch(() => resolve(false));
+      } else resolve(null);
+    });
   }
 
   isCompanyWhitelisted() {
-    const status = null;
-    if (this.hostname && this.screenshot) {
-    }
-    return status;
+    return new Promise((resolve, reject) => {
+      if (this.hostname && this.screenshot) {
+        company
+          .findOne({ whitelist: this.hostname })
+          .then((status) => (status ? resolve(true) : resolve(false)))
+          .catch(() => resolve(false));
+      } else resolve(null);
+    });
   }
 
   // TODO: Spin API key after GSuite account is available
@@ -40,11 +52,28 @@ class Analyse {
     };
   }
 
+  // TODO: Delete after testing
+  forTesting() {
+    return new Promise(async (resolve, reject) => {
+      console.log("URL:", this.url);
+      console.log("HOSTNAME:", this.hostname);
+      this.isCompanyWhitelisted()
+        .then((status) => console.log("company is whitelisted:", status))
+        .catch((err) => console.log(err));
+
+      this.isGloballyMalicious()
+        .then((status) => console.log("link is malicious:", status))
+        .catch((err) => console.log(err));
+
+      resolve();
+    });
+  }
+
   isPhish() {
     return new Promise(async (resolve, reject) => {
       // Check against pre-defined list
-      if (this.isCompanyWhitelisted) resolve(false); // requested ignore
-      if (this.isGloballyMalicious) resolve(true); // pre-defined phish
+      if (await this.isCompanyWhitelisted) resolve(false); // requested ignore
+      if (await this.isGloballyMalicious) resolve(true); // pre-defined phish
 
       // SafeBrowsing to anaylse rate of false +ve/-ve
       const isSafeBrowsingApproved = await this.isSafeBrowsingApproved();
